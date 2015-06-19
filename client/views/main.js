@@ -9,6 +9,9 @@ var templates = require('../templates/compiled');
 module.exports = View.extend({
 	template: templates.main,
 	autoRender: true,
+	events: {
+		'click a[href]': 'handleLinkClick'
+	},
 	initialize: function() {
 		this.listenTo(app.router, 'page', this.handleNewPage);
 	},
@@ -19,5 +22,12 @@ module.exports = View.extend({
 	},
 	handleNewPage: function(page) {
 		this.pages.set(page);
+	},
+	handleLinkClick: function(event) {
+		var tag = event.target; // We know this'll be an <a> tag
+		if (tag.host === window.location.host) {
+			app.router.history.navigate(tag.pathname, {trigger: true});
+			event.preventDefault();
+		}
 	}
 });

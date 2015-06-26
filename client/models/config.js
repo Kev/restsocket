@@ -5,8 +5,8 @@
 var AmpersandModel = require('ampersand-model');
 
 module.exports = AmpersandModel.extend({
-    props: {
-//        domain: 'string'
-    },
-    urlRoot: '/config.json'
+	props: {
+		name: 'string'
+	},
+	urlRoot: '/api/config'
 });

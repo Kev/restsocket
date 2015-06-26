@@ -20,6 +20,8 @@ window.app = {
 			});
 
 			self.router.history.start({pushState: true});
+
+			self.config.fetch();
 		});
 	}
 };

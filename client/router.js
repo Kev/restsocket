@@ -4,12 +4,14 @@
 
 var Router = require('ampersand-router');
 var AboutPage = require('./views/about');
+var ConfigPage = require('./views/config');
 var HomePage = require('./views/home');
 
 module.exports = Router.extend({
 	routes: {
 		'': 'home',
-		'about': 'about'
+		'about': 'about',
+		'config': 'config'
 	},
 
 	home: function() {
@@ -17,5 +19,10 @@ module.exports = Router.extend({
 	},
 	about: function() {
 		this.trigger('page', new AboutPage());
+	},
+	config: function() {
+		this.trigger('page', new ConfigPage({
+			'model': app.config
+		}));
 	}
 });

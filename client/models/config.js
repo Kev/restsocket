@@ -3,8 +3,9 @@
 // See the LICENSE file for more information.
 
 var AmpersandModel = require('ampersand-model');
+var AmpersandWebSocketHint = require('ampersand-websocket-hint');
 
-module.exports = AmpersandModel.extend({
+module.exports = AmpersandModel.extend(AmpersandWebSocketHint, {
 	props: {
 		name: 'string'
 	},

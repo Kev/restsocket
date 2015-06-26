@@ -13,7 +13,10 @@ window.app = {
 		var self = this;
 		domready(function() {
 			self.router = new Router();
+			var ws = new WebSocket('ws://' + location.host);
 			self.config = new Config();
+			self.config.websocket = ws;
+			self.config.fetchOnWebSocketHints(true);
 
 			self.view = new MainView({
 				el: document.body

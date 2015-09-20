@@ -35,3 +35,6 @@
 
 # OS X
 .DS_Store
+
+# completion/linting for vim/Atom
+.clang_complete

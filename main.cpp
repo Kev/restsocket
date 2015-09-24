@@ -20,7 +20,7 @@
 #include <restpp/MemoryFileHandler.h>
 #include <restpp/RESTServer.h>
 #include <restpp/SessionCollection.h>
-#include <restpp/SessionRestHandler.h>
+#include <restpp/SessionRESTHandler.h>
 #include <restpp/WebSocket.h>
 #include <restpp/WebSocketHinter.h>
 

@@ -59,9 +59,14 @@ class DemoSessionCollection : public SessionCollection<boost::shared_ptr<DemoSes
 		bool hasSession(WebSocket::ref webSocket) {
 			return webSocketSessions_.count(webSocket) > 0;
 		}
+
+		virtual boost::shared_ptr<DemoSession> getSession(const std::string& sessionKey) {
+			return sessions_[sessionKey];
+		}
 	private:
 		std::map<WebSocket::ref, std::pair<boost::shared_ptr<DemoSession>, std::string>> webSocketSessions_;
 		boost::uuids::random_generator uuidGenerator_;
+		std::map<std::string, boost::shared_ptr<DemoSession>> sessions_;
 };
 
 boost::shared_ptr<JSONObject> configToJSON(Config* config) {
@@ -97,31 +102,31 @@ class WebSockets {
 			if (sessions_->hasSession(webSocket)) {
 				// Unexpected message, but just ignore for this demo and reprocess it
 			}
-			
+
 			boost::shared_ptr<JSONString> type = boost::dynamic_pointer_cast<JSONString>(message->getValues()["type"]);
-			
-			if (!type || type->getValue() != "login") { 
+
+			if (!type || type->getValue() != "login") {
 				std::cout << "Not a login" << std::endl;
 				return;
 			} // Bad format
-			
+
 			boost::shared_ptr<JSONString> user = boost::dynamic_pointer_cast<JSONString>(message->getValues()["user"]);
 			boost::shared_ptr<JSONString> password = boost::dynamic_pointer_cast<JSONString>(message->getValues()["password"]);
-			
+
 			if (!user || !password || user->getValue() != "demo" || password->getValue() != "secret!") {
 				std::cout << "Login invalid" << std::endl;
 				// Do real error handling in a real application
 				return;
 			}
-			
+
 			std::cout << "Login successful" << std::endl;
-			
+
 			boost::shared_ptr<DemoSession> session = boost::make_shared<DemoSession>(webSocket);
 			std::string key = sessions_->addSession(session);
 			WebSocketHinter::ref hinter = boost::make_shared<WebSocketHinter>(webSocket);
 			hinters_.push_back(hinter);
 			webSocket->onClosed.connect(boost::bind(&WebSockets::handleWebSocketClosed, this, hinter));
-			
+
 			boost::shared_ptr<JSONObject> reply = boost::make_shared<JSONObject>();
 			reply->set("type", boost::make_shared<JSONString>("login-success"));
 			reply->set("cookie", boost::make_shared<JSONString>("librestpp_session=" + key));
@@ -167,7 +172,7 @@ void handleConfigPostRequest(boost::shared_ptr<RESTRequest> request, Config* con
 
 int main(int argc, const char* argv[])
 {
-	librestpp::RESTServer server(1080);
+	librestpp::RESTServer server;
 
 	Config config;
 	config.name_ = "Demo";
@@ -195,5 +200,6 @@ int main(int argc, const char* argv[])
 	server.addDefaultGetEndpoint(htmlHandler);
 
 	server.onWebSocketConnection.connect(boost::bind(&WebSockets::handleNewWebSocket, &webSockets, _1));
+	server.listen(1080);
 	server.run();
 }

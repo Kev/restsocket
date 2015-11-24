@@ -173,7 +173,7 @@ void handleConfigPostRequest(std::shared_ptr<RESTRequest> request, Config* confi
 int main(int argc, const char* argv[])
 {
 	auto driver = std::make_shared<WebSocketPPASIOServerDriver>();
-	librestpp::RESTServer<WebSocketPPASIOServerDriver> server(driver);
+	librestpp::RESTServer server(driver);
 
 	Config config;
 	config.name_ = "Demo";

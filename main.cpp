@@ -15,6 +15,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
+#include <restpp/drivers/WebSocketPPASIOServerDriver.h>
 #include <restpp/JSONRESTHandler.h>
 #include <restpp/MemoryFileHandler.h>
 #include <restpp/RESTServer.h>
@@ -171,7 +172,8 @@ void handleConfigPostRequest(std::shared_ptr<RESTRequest> request, Config* confi
 
 int main(int argc, const char* argv[])
 {
-	librestpp::RESTServer server;
+	auto driver = std::make_shared<WebSocketPPASIOServerDriver>();
+	librestpp::RESTServer<WebSocketPPASIOServerDriver> server(driver);
 
 	Config config;
 	config.name_ = "Demo";
@@ -199,6 +201,6 @@ int main(int argc, const char* argv[])
 	server.addDefaultGetEndpoint(htmlHandler);
 
 	server.onWebSocketConnection.connect(boost::bind(&WebSockets::handleNewWebSocket, &webSockets, _1));
-	server.listen(1080);
-	server.run();
+	driver->listen(1080);
+	driver->run();
 }
